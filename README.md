@@ -1,79 +1,77 @@
-# Enterprise Resource Planning System
+# 🏢 Enterprise Resource Planning (ERP) System
 
-**Live Preview:** [https://kaif-erp.vercel.app/](https://kaif-erp.vercel.app/)
+<div align="center">
+  <a href="https://kaif-erp.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/Live_Demo-kaif--erp.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
+  <img src="https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React 19" />
+  <img src="https://img.shields.io/badge/Tailwind_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind v4" />
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+</div>
 
-A modern, high-density ERP system designed for retail and logistics operations. Built to handle point-of-sale (POS), multi-warehouse inventory, CRM, financial analytics, and comprehensive audit logging.
+<br />
 
-## Tech Stack
+A high-density, production-ready ERP system designed for retail and logistics operations. This system solves critical business challenges: manual inventory tracking, untracked multi-location warehouse stock transfers, POS latency, and lack of transaction auditing.
 
-- **Frontend:** React 19, Tailwind CSS v4, Radix UI Primitives
-- **Framework:** Vite + TanStack Start & Router
-- **Backend Infrastructure:** Supabase (PostgreSQL, Auth, Edge Functions)
-- **Deployment:** Optimized for Vercel (Native Edge Function support)
+---
 
-## Key Features
+> ### 🔒 Security & Intellectual Property Note
+> This public repository serves as an architectural, frontend, and database integration demo. To protect proprietary business logic and client security, **production database seeds, environment encryption keys, and sensitive Supabase Edge Function API code are maintained in a secure, private repository.** Critical database schemas and access patterns are demonstrated here, but direct API endpoint deployments are redacted.
 
-1. **POS & Order Management**
-   - Streamlined checkout flow with barcode scanning support.
-   - Real-time cart calculation, discount applications, and split payments.
-2. **Multi-Warehouse Logistics**
-   - Track inventory across distinct warehouse locations.
-   - Execute and audit stock transfers with conflict-free ledger tracking.
-3. **Advanced Analytics Dashboard**
-   - Real-time revenue insights, moving averages, and top-selling categories.
-   - PDF exports and CSV downloads for offline reporting.
-4. **Role-Based Access Control (RBAC)**
-   - Granular permissions separating Admins from standard Staff.
-   - Secure server-side validation of all state mutations.
+---
 
-## Getting Started
+## ✨ Features at a Glance
+
+*   **🛒 POS & Order Management**
+    *   Streamlined checkout flow with barcode scanning event handlers.
+    *   Real-time cart calculations, split-payments, and tax overrides.
+*   **📦 Multi-Warehouse Logistics**
+    *   Real-time stock level tracking across independent locations.
+    *   Conflict-free ledger auditing for inter-warehouse stock transfers.
+*   **📊 Advanced Analytics Dashboard**
+    *   Live revenue calculations, moving averages, and top-selling categories.
+    *   One-click PDF and CSV exports for offline financial reporting.
+*   **🔑 Role-Based Access Control (RBAC)**
+    *   Granular permissions separating `Super Admin` from standard `Staff` users.
+    *   Server-side validation of all state mutations.
+
+---
+
+## 🛠️ Architecture Decisions & Why
+
+| Technology | Role | Design Rationale |
+| :--- | :--- | :--- |
+| **Vite + TanStack Router** | Client Engine | Leverages fast routing, server-first data loading, and nested layout caching for high-density tables. |
+| **Supabase PostgreSQL** | Database Layer | Enforces referential integrity across POS carts, products, and warehouse logs. |
+| **Row-Level Security (RLS)** | Database Security | Configured directly on tables to ensure standard database access tokens cannot bypass authentication limits. |
+| **Pepper Encryption** | Crypto Integrity | Utilizes a secure pepper hashing addition on top of standard authentication, safeguarding database records. |
+
+---
+
+## 📐 System Visual Flow
+
+```mermaid
+graph TD
+    Client[React 19 Frontend] -->|Auth/Token| Supabase[Supabase API Gateway]
+    Supabase -->|Check RLS Policies| PostgreSQL[(PostgreSQL Database)]
+    Supabase -->|Trigger Mutations| EdgeFunc[Supabase Edge Functions]
+    EdgeFunc -->|Daily Audits| Resend[Resend Email Service]
+```
+
+---
+
+## ⚙️ How to View Locally (Frontend Only)
 
 ### 1. Environment Setup
-
-Create a `.env` file at the root of the project with your Supabase credentials:
-
+Create a `.env` file at the root:
 ```bash
 VITE_SUPABASE_URL=your-supabase-project-url
 VITE_SUPABASE_PUBLISHABLE_KEY=your-supabase-anon-key
-
-SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
-PEPPER_SECRET=your-secure-pepper-string
-RESEND_API_KEY=your-resend-api-key # Optional: For daily report emails
-REPORT_RECIPIENTS=admin@example.com
 ```
 
-### 2. Local Development
-
-Install dependencies and start the local development server:
-
+### 2. Run the Development Server
 ```bash
 npm install
 npm run dev
 ```
-
-### 3. Production Deployment
-
-This project is fully configured for Vercel.
-
-1. Connect your GitHub repository to Vercel.
-2. Set the **Framework Preset** to `TanStack Start` (or let Vercel auto-detect).
-3. Ensure all environment variables from your `.env` are added to Vercel's Environment Variables settings.
-4. Deploy. The custom build configuration natively generates the required `.vercel/output` edge structure.
-
-## Architecture & Security
-
-- **Server-Side Security:** Sensitive operations (like fetching daily reports or managing user roles) are securely gated behind server functions that verify the caller's IP, rate limit requests, and validate Supabase JWTs.
-- **Error Boundaries:** The application implements robust React Error Boundaries combined with a custom telemetry reporter for unhandled exceptions.
-- **PWA Ready:** The system operates offline via a registered Service Worker caching essential static assets.
-
-## License & Copyright
-
-**© 2026 Sheikh Kaif Sadiq. All Rights Reserved.**
-
-This repository and its source code are strictly proprietary and confidential. No part of this repository may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the owner. You may view the code for educational purposes, but you may not copy, fork, modify, or use it for any commercial or personal project.
-
-🔒 Security & Architecture Note
-This public repository serves as a demonstration of the platform's architecture, UI/UX, and core capabilities. For security and proprietary reasons, sensitive business logic, payment gateway webhooks, and proprietary AI algorithms are maintained in a separate private repository which is deployed to production.
-
----
-*Developed by Sheikh Kaif Sadiq*
